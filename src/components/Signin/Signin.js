@@ -1,38 +1,43 @@
 import React from 'react';
 
 class Signin extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props){
+    super();
     this.state = {
-      signInEmail: '',
-      signInPassword: ''
+      signInEmail : '',
+      signInPassword : ''
     }
   }
 
-  onEmailChange = (event) => {
-    this.setState({signInEmail: event.target.value})
-  }
-
-  onPasswordChange = (event) => {
-    this.setState({signInPassword: event.target.value})
-  }
-
-  onSubmitSignIn = () => {
-    fetch('http://localhost:3000/signin', {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.signInEmail,
+  onSubmitSignIn =() => {
+    // console.log(this.state);
+    fetch('http://localhost:3000/signin',{
+      method:'POST',
+      headers : {
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify({
+        email : this.state.signInEmail,
         password: this.state.signInPassword
       })
     })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
+    .then(response => response.json())
+    .then(user => {
+      if(user.id)
+      {
+        this.props.loadUser(user);
+        this.props.onRouteChange('home');
+      }
+    })
+    // this.props.onRouteChange('home');
+  }
+
+  onEmailChange = (event) => {
+    this.setState({signInEmail : event.target.value});
+  }
+
+  onPasswordChange = (event) => {
+    this.setState({signInPassword : event.target.value})
   }
 
   render() {
@@ -73,7 +78,7 @@ class Signin extends React.Component {
               />
             </div>
             <div className="lh-copy mt3">
-              <p  onClick={() => onRouteChange('register')} className="f6 link dim black fw6 db pointer">Register</p>
+              <p  onClick={() =>onRouteChange('register')} className="f6 link dim black fw6 db pointer">Register</p>
             </div>
           </div>
         </main>

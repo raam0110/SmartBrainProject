@@ -13,7 +13,7 @@ import './App.css';
 
 //You must add your own API key here from Clarifai.
 const app = new Clarifai.App({
- apiKey: 'YOUR API KEY HERE'
+ apiKey: '7d7c500387c64ab49ddd298132c1f0bd'
 });
 
 
@@ -37,6 +37,8 @@ class App extends Component {
     }
   }
 
+
+
   loadUser = (data) => {
     this.setState({user: {
       id: data.id,
@@ -49,6 +51,7 @@ class App extends Component {
 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+    console.log(clarifaiFace);
     const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
@@ -68,32 +71,36 @@ class App extends Component {
     this.setState({input: event.target.value});
   }
 
-  onButtonSubmit = () => {
+  onImageSubmit = () => {
     this.setState({imageUrl: this.state.input});
+    console.log(this.state.imageUrl);
    
-
-    app.models.predict('face-detection', this.state.input)
+    app.models
+    .predict(
+      Clarifai.FACE_DETECT_MODEL,
+      this.state.input)
       .then(response => {
-        console.log('hi', response)
-        if (response) {
-          fetch('http://localhost:3000/image', {
-            method: 'put',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              id: this.state.user.id
+        if(true){
+          fetch('http://localhost:3000/image/',{
+            method:'PUT',
+            headers : {
+              'Content-Type' : 'application/json'
+            },
+            body : JSON.stringify({
+              id : this.state.user.id
             })
           })
-            .then(response => response.json())
-            .then(count => {
-              this.setState(Object.assign(this.state.user, { entries: count}))
-            })
-
+          .then(response => {
+            response.json()
+          })
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {entries : count}))
+          })
         }
-        this.displayFaceBox(this.calculateFaceLocation(response))
-      })
-      .catch(err => console.log(err));
+        this.displayFaceBox(this.calculateFaceLocation(response)
+      )})
+      .catch(err => {console.log(err)});
   }
-
   onRouteChange = (route) => {
     if (route === 'signout') {
       this.setState({isSignedIn: false})
@@ -118,7 +125,7 @@ class App extends Component {
               />
               <ImageLinkForm
                 onInputChange={this.onInputChange}
-                onButtonSubmit={this.onButtonSubmit}
+                onButtonSubmit={this.onImageSubmit}
               />
               <FaceRecognition box={box} imageUrl={imageUrl} />
             </div>
