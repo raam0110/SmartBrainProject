@@ -7,5 +7,3 @@ Final project for ZTM course
 4. You must add your own API key in the `src/App.js` file to connect to Clarifai.
 
 You can grab Clarifai API key [here](https://www.clarifai.com/)
-
-*visist https://zerotomastery.io/ for more*
